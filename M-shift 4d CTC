@@ -1,0 +1,69 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+def mobius_spiral_trajectory(t, r, n, m_shift):
+    theta = t * np.pi
+    phi = n * theta / 2
+    x = r * (np.cos(theta) * np.sin(phi)) * m_shift(t, phi)
+    y = r * (np.sin(theta) * np.sin(phi)) * m_shift(t, phi)
+    z = r * np.cos(phi) * m_shift(t, phi)
+    return x, y, z
+
+def visualize_tetrahedron_with_m_shift(a, b, c, n_points, m_shift):
+    u = np.linspace(-np.pi, np.pi, n_points)
+    v = np.linspace(-np.pi / 2, np.pi / 2, n_points)
+    u, v = np.meshgrid(u, v)
+
+    # Define the four faces of the tetrahedron
+    face1_x = a * np.cosh(u) * np.cos(v) * m_shift(u, v)
+    face1_y = b * np.cosh(u) * np.sin(v) * m_shift(u, v)
+    face1_z = c * np.sinh(u) * m_shift(u, v)
+
+    face2_x = -a * np.cosh(u) * np.cos(v) * m_shift(u, v)
+    face2_y = -b * np.cosh(u) * np.sin(v) * m_shift(u, v)
+    face2_z = c * np.sinh(u) * m_shift(u, v)
+
+    face3_x = a * np.cosh(u) * np.cos(v) * m_shift(u, v)
+    face3_y = -b * np.cosh(u) * np.sin(v) * m_shift(u, v)
+    face3_z = -c * np.sinh(u) * m_shift(u, v)
+
+    face4_x = -a * np.cosh(u) * np.cos(v) * m_shift(u, v)
+    face4_y = b * np.cosh(u) * np.sin(v) * m_shift(u, v)
+    face4_z = -c * np.sinh(u) * m_shift(u, v)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.plot_surface(face1_x, face1_y, face1_z, color='b', alpha=0.5)
+    ax.plot_surface(face2_x, face2_y, face2_z, color='g', alpha=0.5)
+    ax.plot_surface(face3_x, face3_y, face3_z, color='r', alpha=0.5)
+    ax.plot_surface(face4_x, face4_y, face4_z, color='y', alpha=0.5)
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    plt.show()
+
+def m_shift(u, v):
+    return 2.72
+
+if __name__ == "__main__":
+    n_points = 100
+
+    # Visualize the tetrahedron with M-shift
+    visualize_tetrahedron_with_m_shift(1, 2, 3, n_points, m_shift)
+
+    # Generate and plot the Mobius spiral
+    r = 3
+    n = 2
+    t = np.linspace(0, 2 * np.pi, n_points)
+    x, y, z = mobius_spiral_trajectory(t, r, n, m_shift)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot(x, y, z, color='r')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    plt.show()
